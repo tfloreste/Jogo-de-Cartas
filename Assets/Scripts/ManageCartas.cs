@@ -20,7 +20,7 @@ public class ManageCartas : MonoBehaviour
     int numAcertos = 0;     // Número de acertos na rodada
     AudioSource somOk;      // Som a ser tocado ao acertar um match
 
-    int ultimoJogo = 0;
+    int record = 0;         // Guarda o menor número de tentativas de todos os jogos
 
     // Start is called before the first frame update
     void Start()
@@ -29,8 +29,10 @@ public class ManageCartas : MonoBehaviour
         UpdateTentativas();
 
         somOk = GetComponent<AudioSource>();
-        ultimoJogo = PlayerPrefs.GetInt("Jogadas", 0);
-        GameObject.Find("ultimaJogada").GetComponent<Text>().text = "Jogo Anterior = " + ultimoJogo;
+        record = PlayerPrefs.GetInt("Record", 0);
+
+        GameObject.Find("ultimaJogada").GetComponent<Text>().text = "Record = " + record;
+        
     }
 
     // Update is called once per frame
@@ -52,10 +54,18 @@ public class ManageCartas : MonoBehaviour
 
                     somOk.Play();
                     numAcertos++;
-                    if( numAcertos == 13)
+                    if( numAcertos == 26)
                     {
-                        PlayerPrefs.SetInt("Jogadas", numTentativas);
-                        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                        int ultimoRecord = PlayerPrefs.GetInt("Record", 0);
+                        if (ultimoRecord == 0 || numTentativas < ultimoRecord)
+                        {
+                            PlayerPrefs.SetInt("Record", numTentativas);
+                            SceneManager.LoadScene("NewRecordScene");
+                        }
+                        else
+                        {
+                            SceneManager.LoadScene("EndGameScene");
+                        }
 
                     }
                         
@@ -81,13 +91,16 @@ public class ManageCartas : MonoBehaviour
     {
         int[] arrayEmbaralhado = CriarArrayEmbaralhado();
         int[] arrayEmbaralhado2 = CriarArrayEmbaralhado();
+        int[] arrayEmbaralhado3 = CriarArrayEmbaralhado();
+        int[] arrayEmbaralhado4 = CriarArrayEmbaralhado();
         //Instantiate(carta, new Vector3(0, 0, 0), Quaternion.identity);
         for (int i = 0; i < 13; i++)
         {
             // AddUmaCarta(i);
             AddUmaCarta(0, i, arrayEmbaralhado[i], "clubs");
-            //AddUmaCarta(1, i, arrayEmbaralhado2[i],"hearts");
-            AddUmaCarta(1, i, arrayEmbaralhado2[i],"clubs");
+            AddUmaCarta(1, i, arrayEmbaralhado2[i],"hearts");
+            AddUmaCarta(2, i, arrayEmbaralhado3[i],"spades");
+            AddUmaCarta(3, i, arrayEmbaralhado4[i],"diamonds");
         }
             
     }
@@ -103,7 +116,7 @@ public class ManageCartas : MonoBehaviour
 
         //float x = centro.transform.position.x + (rank - 13/2)*2.0f;
         float x = centro.transform.position.x + (rank - 13/2)*fatorEscalaX;
-        float y = centro.transform.position.y + (linha - 2/2)*fatorEscalaY;
+        float y = centro.transform.position.y + (linha - 4/2)*fatorEscalaY;
         float z = centro.transform.position.z;
 
         Vector3 novaPosicao = new Vector3(x, y, z);
@@ -167,9 +180,10 @@ public class ManageCartas : MonoBehaviour
 
     public void CartaSelecionada(GameObject carta)
     {
-        if(!primeiraCartaSelecionada)
-        {
-            string linha = carta.name.Substring(0, 1);
+        string linha = carta.name.Substring(0, 1);
+
+        if (!primeiraCartaSelecionada)
+        {    
             linhaCarta1 = linha;
 
             primeiraCartaSelecionada = true;
@@ -177,9 +191,8 @@ public class ManageCartas : MonoBehaviour
             carta1.GetComponent<Tile>().RevelaCarta();
 
         }
-        else if(primeiraCartaSelecionada && !segundaCartaSelecionada)
+        else if(primeiraCartaSelecionada && !segundaCartaSelecionada && linhaCarta1 != linha)
         {
-            string linha = carta.name.Substring(0, 1);
             linhaCarta2 = linha;
 
             segundaCartaSelecionada = true;

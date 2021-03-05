@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 4640884354861216546}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -122,5 +122,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   originalCarta: {fileID: 21300000, guid: cabcb1d889b34474b89db952bb672195, type: 3}
-  novaCarta: {fileID: 0}
   backCarta: {fileID: 21300000, guid: 24433f241be6e6746b5ec694a04ecc08, type: 3}
